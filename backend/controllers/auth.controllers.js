@@ -1,4 +1,5 @@
 import { User } from '../models/user.model.js';
+import bcryptjs from "bcryptjs";
 
 export async function signup(req, res){
    
@@ -26,19 +27,30 @@ export async function signup(req, res){
             return res.status(400).json({success:false, message:"Username already exists"})
         }
 
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hash(password, salt);
+
         const PROFILE_PICS = ['/images/userAvatars/blue.png', "/images/userAvatars/green.png", "/images/userAvatars/red.png"];
 
         const image = PROFILE_PICS[Math.floor(Math.random() * PROFILE_PICS.length)];
 
         const newUser = new User({
             email, 
-            password, 
+            password: hashedPassword, 
             username, 
             image
         });
         
-        await newUser.save()
 
+        await newUser.save()
+        
+        res.status(201).json({success: true, 
+            user: {
+            ...newUser._doc, 
+            password: "",
+
+        },
+     });
     } catch (error) {
         console.log("Error in singup controller", error.message)
         res.status(500).json({success: false, message:"Internal server error"});
