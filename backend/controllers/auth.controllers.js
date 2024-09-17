@@ -1,6 +1,7 @@
 import { User } from '../models/user.model.js';
 import bcrypt from "bcrypt";
 import { generateTokenAndSetCookie } from '../utils/generateToken.js';
+import { ENV_VARS } from '../config/envVars.js';
 
 
 export async function signup(req, res) {
