@@ -1,4 +1,3 @@
-import { json } from "express";
 import { fetchFromTMDB } from "../services/tmdb.service.js";
 
 export async function getTrendingMovie(req, res) {
